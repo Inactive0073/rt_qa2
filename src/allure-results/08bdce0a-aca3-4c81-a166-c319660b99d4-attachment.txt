@@ -1,0 +1,6 @@
+
+        SELECT a.name, COUNT(b.id)
+        FROM authors a
+        LEFT JOIN books b ON a.id = b.author_id
+        GROUP BY a.name;
+    

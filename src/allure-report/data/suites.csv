@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"Сортировка по году должна идти от новых к старым","5","test_books_order_by_year","src.test","2025-10-25","passed","2025-10-25","","test_queries","",""
+"Названия на 'И' должны быть только 'Идиот'","3","test_books_start_with_letter","src.test","2025-10-25","passed","2025-10-25","","test_queries","",""
+"Проверяем, что книги Толстого находятся корректно","8","test_books_by_author","src.test","2025-10-25","passed","2025-10-25","","test_queries","",""
+"Каждый автор должен иметь >= 1 книги","6","test_books_count_per_author","src.test","2025-10-25","passed","2025-10-25","","test_queries","",""

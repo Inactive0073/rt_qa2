@@ -8,7 +8,7 @@ from src.utils import config
 
 
 @pytest.fixture(scope="session")
-def db_conn() -> Generator[None, None, psycopg2.extensions.connection]:
+def db_conn() -> Generator[psycopg2.extensions.connection, None, None]:
     for _ in range(3):
         try:
             conn = psycopg2.connect(
