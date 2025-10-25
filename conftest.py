@@ -4,7 +4,7 @@ import pytest
 import psycopg2
 import time
 
-from utils import config
+from src.utils import config
 
 
 @pytest.fixture(scope="session")
