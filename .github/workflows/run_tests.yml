@@ -1,0 +1,57 @@
+name: Test Library Database Queries
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+
+jobs:
+  test-sql:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: library
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd="pg_isready -U user -d library"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=5
+        volumes:
+          - ./init:/docker-entrypoint-initdb.d
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install pytest psycopg2-binary
+
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..10}; do
+            pg_isready -h localhost -U user -d library && break
+            echo "⏳ Waiting for DB..."
+            sleep 3
+          done
+
+      - name: Run pytest
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: library
+          POSTGRES_PORT: 5432
+        run: pytest -v test/
