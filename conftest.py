@@ -2,27 +2,27 @@ from typing import Generator
 
 import pytest
 import psycopg2
-import time 
-import os
+import time
 
 from utils import config
 
 
 @pytest.fixture(scope="session")
-def db_connection() -> Generator[None, None, psycopg2.extensions.connection]:
-    for _ in range(10):
+def db_conn() -> Generator[None, None, psycopg2.extensions.connection]:
+    for _ in range(3):
         try:
             conn = psycopg2.connect(
-                database=config.DATABASE_URL,
-                user=config.DATABASE_USER,
-                password=config.DATABASE_PASSWORD
+                database=config.POSTGRES_DB,
+                user=config.POSTGRES_USER,
+                password=config.POSTGRES_PASSWORD,
+                port=config.POSTGRES_PORT,
             )
             break
         except psycopg2.OperationalError:
             time.sleep(5)
     else:
         raise RuntimeError("Could not connect to the database")
-    
+
     yield conn
     conn.close()
 
