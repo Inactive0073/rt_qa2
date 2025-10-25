@@ -13,13 +13,13 @@ jobs:
       postgres:
         image: postgres:17-alpine
         env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: library
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
-          - 5434:5432
+          - ${{ vars.POSTGRES_PORT }}:5432
         options: >-
-          --health-cmd="pg_isready -U user -d library"
+          --health-cmd="pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}"
           --health-interval=5s
           --health-timeout=3s
           --health-retries=5
@@ -40,9 +40,13 @@ jobs:
           pip install pytest psycopg2-binary
 
       - name: Wait for PostgreSQL
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
         run: |
           for i in {1..10}; do
-            pg_isready -h localhost -U user -d library && break
+            pg_isready -h localhost -U "$POSTGRES_USER" -d "$POSTGRES_DB" -p "$POSTGRES_PORT" && break
             echo "⏳ Waiting for DB..."
             sleep 3
           done
@@ -50,8 +54,8 @@ jobs:
       - name: Run pytest
         env:
           POSTGRES_HOST: localhost
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: library
-          POSTGRES_PORT: 5432
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PORT: ${{ vars.POSTGRES_PORT }}
         run: pytest -v test/
