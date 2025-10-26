@@ -35,7 +35,7 @@
 
 ### 1. Клонируйте репозиторий
 ```bash
-git clone <repository-url>
+git clone https://github.com/Inactive0073/rt_qa2
 cd rt
 ```
 
